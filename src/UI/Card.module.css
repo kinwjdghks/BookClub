@@ -1,0 +1,24 @@
+.Card{
+    border: 1px solid black;
+    border-radius: 2rem;
+    box-shadow: 3px 3px grey;
+}
+
+.upcoming{
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+    margin-top: 5rem;
+    padding: 1rem;
+
+}
+.information{
+    height: 25rem;
+    margin-top: 1rem;
+    overflow: hidden;
+}
+
+.container_form{
+    height: 12rem;
+    margin-top: 1rem;
+}
