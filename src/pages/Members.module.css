@@ -1,0 +1,42 @@
+.membersPage{
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.container_members{
+    /* width: 100vw; */
+
+    padding-top: 8rem;
+    padding-bottom: 5rem;
+    /* border: 1px solid black; */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    row-gap: 1.5rem;
+    column-gap: 3rem;
+
+}
+
+.details{
+    width:5rem;
+    margin:1rem;
+}
+.details p{
+    padding: 0.3rem;
+    text-align: center;
+}
+.name{
+    font-size: 1.3rem;
+    font-weight:  bold;
+}
+.position{
+    font-weight: 300;
+}
+.intro{
+    font-size: 0.8rem;
+}
+
+.container_icon{
+    margin-top: 1rem;
+}

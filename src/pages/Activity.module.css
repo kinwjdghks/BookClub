@@ -1,14 +1,15 @@
 .activityPage{
     width: 100vw;
-    height: 100vh;
     /* background-color: blue; */
     padding-top: 5rem;
+    padding-bottom: 5rem;
     display: flex;
     justify-content: center;
 }
 .details{
     margin: 1rem;
     font-size: 1.5rem;
+    height:fit-content;
 }
 .details p{
     margin-top: 0.7rem;

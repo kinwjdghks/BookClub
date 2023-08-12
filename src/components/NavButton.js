@@ -3,11 +3,10 @@ import { useNavigate } from "react-router-dom";
 import {useRef} from 'react';
 
 const NavButton = () => {
-    // const [isModalOpen,setIsModalOpen] = useState(false);
+    
     const modalRef = useRef();
     const sidebarRef = useRef();
     const modalExit = () =>{
-        // modalRef.current.style.display = 'none';
         modalRef.current.style.opacity = 0;
         sidebarRef.current.style.transform = "translate(-100%,0)";
         setTimeout(
@@ -19,7 +18,8 @@ const NavButton = () => {
         
     }
     const modalEnter = () =>{
-        modalRef.current.style.display= null;
+        modalRef.current.style.display = 'block';
+        
         modalRef.current.style.opacity = 0.5;
         sidebarRef.current.style.transform = "translate(0%,0)";
         
