@@ -7,7 +7,7 @@
 .container_members{
     /* width: 100vw; */
 
-    padding-top: 8rem;
+    padding-top: 10rem;
     padding-bottom: 5rem;
     /* border: 1px solid black; */
     display: grid;
@@ -19,7 +19,6 @@
 }
 
 .details{
-    width:5rem;
     margin:1rem;
 }
 .details p{

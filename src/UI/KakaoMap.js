@@ -1,15 +1,15 @@
 import { useRef,useEffect } from "react";
 const {kakao} = window;
 const Kakaomap = ({place}) =>{
-
     const placeList = {
         '강남':[37.49798640766797,127.02764966969421],
         '신논현':[37.50450137396596,127.02450799203919]
     };
+    
     const container = useRef();
 
     useEffect(()=>{
-        const pos =  new kakao.maps.LatLng(placeList[place][0],placeList[place][1]);
+        const pos =  (placeList[place]==null) ? new kakao.maps.LatLng(placeList['강남'][0],placeList['강남'][1]): new kakao.maps.LatLng(placeList[place][0],placeList[place][1]);
         const options = {
             // center: new kakao.maps.LatLng(placeList['강남']),
             center: pos,
