@@ -7,7 +7,6 @@
     /* justify-content: center; */
 }
 .newEventBtn{
-
     width: 7rem;
     height: 3rem;
     display: flex;
@@ -19,6 +18,11 @@
     align-items: center;
     justify-content: center;
     border-radius: 1rem;
+    cursor: pointer;
+}
+.clicked{
+    background-color: grey;
+    cursor:default;
 }
 .details{
     margin: 1rem;
@@ -41,4 +45,10 @@
 .action{
     margin-top: 1rem;
     float: right;
+}
+.imgPreviewContainer{
+    width: 15rem;
+    height: 13rem;
+    border: 1px solid black;
+    margin-top: 1rem;
 }
