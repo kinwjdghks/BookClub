@@ -137,7 +137,7 @@ const Activity = () => {
   return (
     <div className={styles.activityPage}>
       <Card className="upcoming">
-        <p style={{ fontWeight: 700, fontSize: "2rem" }}>Upcoming</p>
+        <p style={{ fontWeight: 700, fontSize: "2rem" }}>Upcoming Event</p>
         <div style={{ display: "flex", flexDirection: "row-reverse" }}>
           <div className={`${styles.newEventBtn} ${isAddingEvent ? styles.clicked : ''}`} onClick={addNewEventHandler}>
             New Event

@@ -12,7 +12,7 @@ const AuthFailPage = () => {
             alt="sorry"
           />
         </div>
-        <p>회원들에게 공개된 정보입니다.</p>
+        <p>회원들에게만 공개된 정보입니다.</p>
       </Card>
     </div>
   );

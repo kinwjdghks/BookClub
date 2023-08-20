@@ -38,13 +38,13 @@ const Kakaomap = ({place,placename,searchinput,onSearch}) =>{
                 setIsLoading(false);
             }
             else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-                setAlert(<p>"검색 결과가 존재하지 않습니다."</p>);
+                setAlert(<p>검색 결과가 존재하지 않습니다.</p>);
                 setIsLoading(false);
             
                 return;
               } 
             else if (status === kakao.maps.services.Status.ERROR) {
-                setAlert(<p>"검색 결과 중 오류가 발생했습니다."</p>);
+                setAlert(<p>검색 결과 중 오류가 발생했습니다.</p>);
                 setIsLoading(false);
                 return;
               }
@@ -95,7 +95,7 @@ const Kakaomap = ({place,placename,searchinput,onSearch}) =>{
                 
                 try{
                 setIsLoading(true);
-                setAlert(<p>"로딩중입니다...</p>);
+                setAlert(<p>로딩중입니다...</p>);
                 await ps.keywordSearch(searchinput, placesSearchCB);
                 }
                 catch(e){
