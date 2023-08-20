@@ -1,0 +1,23 @@
+.background{
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color:rgb(255, 244, 228);
+}
+
+.imgcontainer{
+    width: 60vw;
+    height: 50vw;
+}
+.img{
+    object-fit: fill;
+    }
+@media (min-width: 768px){
+    .imgcontainer{
+        width: 30rem;
+        height: 25rem;
+    }
+    .img{
+        object-fit: fill;
+        }
+}

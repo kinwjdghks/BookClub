@@ -1,6 +1,5 @@
 import { useRef,useEffect } from "react";
 const {kakao} = window;
-// {Lat:37.49798640766797,Lng:127.02764966969421}
 
 
 const Kakaomap = ({place,placename,searchinput,onSearch}) =>{

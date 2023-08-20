@@ -1,6 +1,7 @@
 .Topheader{
     z-index: 10;
     position: fixed;
+    top: 0;
     background-color: white;
     width: 100vw;
     height: 5rem;

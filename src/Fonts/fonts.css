@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'nanumBarunpen';
+    src: url("./NanumBarunpenB.otf");
+    src: url("./NanumBarunpenB.ttf");
+}
+@font-face {
+    font-family: 'nanumSquare';
+    src: url("./NanumSquareNeo-aLt.ttf");
+    src: url("./NanumSquareNeoOTF-Lt.otf");
+}
