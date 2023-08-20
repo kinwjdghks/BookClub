@@ -17,7 +17,6 @@ const NavButton = () => {
         navigate(to);
         toggleCat();
     }
-    console.log(AUTH.isLoggedIn);
 
   return (
     <>
