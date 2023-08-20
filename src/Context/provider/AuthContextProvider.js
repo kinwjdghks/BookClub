@@ -2,12 +2,11 @@ import React, {useState} from 'react';
 import AuthContext from "../context/auth_context";
 
 const AuthContextProvider = ({children}) =>{
-    const loginHandler = () => setLoginState(true);
-    const logoutHandler = () => setLoginState(false);
+    const loginToggle = () => setLoginState(prevState => {return {...prevState, isLoggedIn: !prevState.isLoggedIn}});
+    
     const initialState = {
-        isLoggedin:false,
-        loginHandler,
-        logoutHandler,
+        isLoggedIn:false,
+        loginToggle: loginToggle
     }
     const [loginState,setLoginState] = useState(initialState);
 

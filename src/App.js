@@ -11,13 +11,13 @@ import NavButton from "./components/NavButton";
 import { Reset } from "styled-reset";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AuthContext from "./Context/context/auth_context";
+import AuthContextProvider from "./Context/provider/AuthContextProvider";
 function App() {
   return (
     <div>
       <Reset /*reset css*/ />
       
-      <AuthContext.Provider value={{isLoggedIn: false}}>
+      <AuthContextProvider>
         <Router>
 
           <NavButton />
@@ -31,7 +31,7 @@ function App() {
             <Route path="/oops" element={<AuthFailPage/>}/>
           </Routes>
         </Router>
-      </AuthContext.Provider>
+      </AuthContextProvider>
     </div>
   );
 }

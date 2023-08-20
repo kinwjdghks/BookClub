@@ -17,12 +17,15 @@ const NavButton = () => {
         navigate(to);
         toggleCat();
     }
+    console.log(AUTH.isLoggedIn);
 
   return (
     <>
-      
+  
       <div className={`${styles.sidebar} ${isCatOpen && styles.active}`}>
         <div className={styles.container_menu}>
+        {!AUTH.isLoggedIn && <div>logged in</div>}
+        
           <ul>
             <li onClick={()=>moveto("./members")}>Members</li>
             <li onClick={()=>moveto("./history")}>History</li>
@@ -30,7 +33,7 @@ const NavButton = () => {
               if(AUTH.isLoggedIn) moveto("./activity");
               else moveto("./oops");
             }}>Activity</li>
-            
+            <li onClick={AUTH.loginToggle}>Login</li>
           </ul>
         </div>
       </div>

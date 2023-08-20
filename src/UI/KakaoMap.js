@@ -1,9 +1,9 @@
-import { useRef,useEffect } from "react";
+import { useRef,useEffect,useState } from "react";
 const {kakao} = window;
 
 
 const Kakaomap = ({place,placename,searchinput,onSearch}) =>{
-    
+    const [isLoading, setIsLoading] = useState(false);
     const infowindow = new kakao.maps.InfoWindow({zIndex:1}); //장소명 나타내는 인포윈도우
     const ps = new kakao.maps.services.Places(); //장소 검색 객체
     const container = useRef();
