@@ -9,7 +9,7 @@ import { useState,useRef, useEffect } from "react";
 const dummyList = [
   {
     meetingType: "discussion",
-    place: {Lat:37.49798640766797,Lng: 127.02764966969421},
+    place: {y:37.49798640766797,x: 127.02764966969421},
     placename:"강남역",
     date: new Date("2023-08-27"),
     theme: "경제",
@@ -18,7 +18,7 @@ const dummyList = [
   },
   {
     meetingType: "discussion",
-    place: {Lat:37.50450137396596,Lng:127.02450799203919},
+    place: {y:37.50450137396596,x:127.02450799203919},
     placename:"신논현역",
     date: new Date("2023-09-10"),
     theme: "문학",
