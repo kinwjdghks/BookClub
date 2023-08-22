@@ -1,0 +1,13 @@
+.canvas_wrapper{
+    width: 90vw;
+    height: 80vh;
+    border: 2px solid black;
+    margin: 15vh auto;
+    overflow: hidden;
+    position: relative;
+}
+.canvas{
+    width: 3840px;
+    height: 2400px;
+    position: absolute;
+}
