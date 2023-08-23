@@ -1,5 +1,5 @@
 import styles from "./BookCanvas.module.css";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback} from "react";
 
 
 const dummyNodeList = [
@@ -30,11 +30,11 @@ const dummyNodeList = [
 ];
 const addNode = (node, ctx, canvasRef) => {
     if(!ctx){
-        console.log("ctx is null")
+        // console.log("ctx is null")
         return;
     }
     if(!canvasRef){
-        console.log("canvas is null")
+        // console.log("canvas is null")
         return;
     }
     ctx.beginPath();
@@ -47,49 +47,90 @@ const addNode = (node, ctx, canvasRef) => {
     if(node.level === 0){
         ctx.font = "30px NotoKR";
         ctx.fillText("aafnaf",node.cx,node.cy);
-        console.log("dd");
     }
 };
 
+
+
+
 const BookCanvas = () => {
   const canvasRef = useRef();
-//   const [canvasPos,setCanvasPos] = useRef({left:0,top:0});
-  
-  const [onPress,setOnPress] = useState(false);
-  const onMouseDown = () => {
-    setOnPress(true);
-  }
-  const onMouseUp = () => {
-    setOnPress(false);
-  }
-  const onMouseMove = (e) =>{
-    e.preventDefault();
-    if(onPress===true){
-    const pos = e.target.getBoundingClientRect();
+  const [originPos,setOriginPos] = useState({x:0,y:0}); //드래그 전 포지션값 (e.target.offset의 상대 위치)
+  const [clientPos,setClientPos] = useState({x:0,y:0}); //실시간 커서위치인 e.client를 갱신하는값
+  const [pos,setPos] = useState({left:0, top:0}); //canvas가 실제로 위치하는 좌표
+  const [ctx, setCtx] = useState(null); //canvas에 도형 그리기 context
+ //clientX,Y: 보여지는 화면 기준 offset. offsetX,Y: 속한 Div 시작점 기준 offset
 
-    let mouseX = e.clientX;
-    let mouseY = e.clientY;
-    // canvasRef.current.styles.top = mouseY-canvasPos.top;
-    // canvasRef.current.styles.left = mouseX-canvasPos.left;
-    // setCanvasPos((prev)=> {return {left: mouseX-prev.left,top: mouseY-prev.top}});
-    }
-  }
-  const [ctx, setCtx] = useState(null);
+  const dragStartHandler = useCallback((e) =>{
+    
+    const blankCanvas = document.createElement('canvas');
+    blankCanvas.classList.add("canvas");
+    e.dataTransfer.setDragImage(blankCanvas, 0, 0);
+    document.body.appendChild(blankCanvas);
+    e.dataTransfer.effectAllowed = 'move'; // 투명 캔버스를 생성하여 글로벌 아이콘 제거
+
+    // const originPosTemp = {x:e.target.offsetLeft, y:e.target.offsetTop};
+    // console.log("originPosTemp", originPosTemp);
+    // setOriginPos(originPosTemp); //드래그 시작할때 드래그 전 위치값을 저장(onDragOver에 사용)
+
+    const clientPosTemp = {x:e.clientX, y:e.clientY};
+    console.log("clientPosTemp", clientPosTemp);
+    setClientPos(clientPosTemp);
+},[]);
+const dragHandler = useCallback((e) =>{
+    
+    const posTemp = {left: e.target.offsetLeft + (e.clientX - clientPos.x), //dx
+        top:e.target.offsetTop + (e.clientY - clientPos.y)}; //dy
+    setPos(posTemp);
+    console.log("e.target.offset: "+e.target.offsetLeft+ " "+ e.target.offsetTop);
+    console.log("e.client: "+e.clientX+" "+e.clientY);
+    console.log("clientPos: "+clientPos.x+" "+clientPos.y);
+    console.log("posTemp: "+posTemp.left+" "+posTemp.top);
+
+    const clientPosTemp = {x:e.clientX, y:e.clientY};
+    setClientPos(clientPosTemp);
+},[clientPos]);
+const dragOverHandler = useCallback((e) =>{
+    e.preventDefault();
+},[]);
+const dragEndHandler = useCallback(() =>{
+
+    // if (!isInsideDragArea(e)) {
+        // const posTemp = { ...pos };
+        // posTemp["left"] = originPos.x;
+        // posTemp["top"] = originPos.y;
+        // setPos(posTemp);
+    // }
+        // 캔버스 제거
+        const canvases = document.getElementsByClassName("canvas");
+        for (let i = 0; i < canvases.length; i++) {
+        let canvas = canvases[i];
+        canvas.parentNode?.removeChild(canvas);
+        }
+        // 캔버스로 인해 발생한 스크롤 방지 어트리뷰트 제거
+        document.body.removeAttribute("style");
+      
+},[originPos]);
+
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas.getContext) return <p>Something went wrong!</p>;
     const ctx = canvas.getContext("2d");
     setCtx(ctx);
+    
 }, []);
 
 useEffect(()=>{
-    // addNode(dummyNodeList[0],ctx,canvasRef);
+    addNode(dummyNodeList[0],ctx,canvasRef);
 },[ctx,dummyNodeList]);
 
 
   return (
     <div className={styles.canvas_wrapper}>
-      <canvas className={styles.canvas} ref={canvasRef} width="2560" height="1600" onMouseDown={onMouseDown} onMouseUp={onMouseUp} onMouseMove={onMouseMove} onMouseLeave={onMouseUp}></canvas>
+      <canvas className={styles.canvas} ref={canvasRef} width="2560" height="1600" 
+        draggable onDragStart={(e) => dragStartHandler(e)} onDrag={(e) => dragHandler(e)}
+        onDragOver={(e) => dragOverHandler(e)} onDragEnd={(e) => dragEndHandler(e)} style={{left:pos.left,top:pos.top}}></canvas>
     </div>
   );
 };

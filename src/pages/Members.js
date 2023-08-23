@@ -14,6 +14,11 @@ const Members = () => {
       intro: "나는야 이다혜",
     },
     {
+      name: "정정환",
+      position: "기획부장",
+      intro: "나는야 정정환",
+    },
+    {
       name: "양영준",
       position: "멤버",
       intro: "나는야 양영준",
@@ -23,11 +28,7 @@ const Members = () => {
       position: "멤버",
       intro: "나는야 유건",
     },
-    {
-      name: "정정환",
-      position: "멤버",
-      intro: "나는야 정정환",
-    },
+    
     {
       name: "김이수",
       position: "멤버",
@@ -53,10 +54,10 @@ const Members = () => {
   return (
     <div className={styles.membersPage}>
       <div className={styles.container_members}>
-        {memberList.map((person) => {
-          return <Card className="container_person">
+        {memberList.map((person,index) => {
+          return <Card className="container_person" key={index}>
             <div className={styles.container_icon}>
-                <img src={personIcon}/>
+                <img src={personIcon} alt="member"/>
             </div>
             <div className={styles.details}>
                 <p className={styles.name}>{person.name}</p>
