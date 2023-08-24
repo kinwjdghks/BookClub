@@ -1,0 +1,115 @@
+
+.container{
+    position: relative;
+    width: 18.5rem;
+    height: 15rem;
+    left: -50%;
+
+    opacity:0;
+    transform: translate(0,-5%);
+    font-family: 'nanumSquare', sans-serif;
+    /* visibility: hidden; */
+    transition: opacity 0.5s ease-out 200ms, transform 0.5s ease-out 200ms;
+    
+}
+@media (min-width: 768px) {
+    .container{
+    top: -5.5rem;
+    left: calc(8rem + 5vw);
+    transform: translate(-5%,0);
+    }
+}
+
+.container.active{
+    opacity: 1;
+    transform: translate(0%,0);
+}
+.input{
+    display: flex;
+    height: 3rem;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+.labels{
+    width: 7rem;
+    text-align: center;
+    font-size: 1rem;
+}
+.txtinput{
+    height: 1.5rem;
+    width: 10rem;
+    font-size: 0.9rem;
+    border-radius: 0.6rem;
+    border-color: rgb(255, 244, 223);
+    background-color: rgb(255, 244, 223);
+    font-family: 'nanumSquare', sans-serif;
+}
+
+.toRegisterBox{
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    font-weight: bolder;
+    width: inherit;
+    display: flex;
+    position: absolute;
+    top: 8.7rem;
+    align-items: center;
+    perspective: 800px;
+    transition: transform .3s ease-in-out;
+    transform: rotateX(90deg) translateZ(-0.7rem);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+.toRegisterBox.active{
+    transform: rotateX(0deg);
+
+}
+
+.toRegister{
+    width: fit-content;
+    text-align: center;
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+.input.userpwcheck{
+    position:absolute;
+    perspective: 800px;
+    transition: transform .3s ease-in-out;
+    transform: rotateX(90deg) translateZ(0.7rem);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    
+}
+.input.userpwcheck.active{
+    transform: rotateX(0deg);
+}
+
+.txtinput.userpwcheck{
+    margin-left: 16px;
+}
+
+.btn_login{
+    position: absolute;
+    width: 1.7rem;
+    height: 1.7rem;
+    left: 18.8rem;
+    opacity: 0.4;
+    top:0.56rem;
+    transition: top .8s ease-in-out;
+}
+.btn_login.active{
+    cursor: pointer;
+    opacity: 1;
+}
+.btn_login.register{
+    top: 3.6rem;
+}
+
+.btn_peek{
+    position: absolute;
+    width: 1.1rem;
+    height: 1.1rem;
+    left: 16.8rem;
+}
+

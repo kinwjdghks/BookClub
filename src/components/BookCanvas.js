@@ -55,7 +55,6 @@ const addNode = (node, ctx, canvasRef) => {
 
 const BookCanvas = () => {
   const canvasRef = useRef();
-  const [originPos,setOriginPos] = useState({x:0,y:0}); //드래그 전 포지션값 (e.target.offset의 상대 위치)
   const [clientPos,setClientPos] = useState({x:0,y:0}); //실시간 커서위치인 e.client를 갱신하는값
   const [pos,setPos] = useState({left:0, top:0}); //canvas가 실제로 위치하는 좌표
   const [ctx, setCtx] = useState(null); //canvas에 도형 그리기 context
@@ -69,12 +68,8 @@ const BookCanvas = () => {
     document.body.appendChild(blankCanvas);
     e.dataTransfer.effectAllowed = 'move'; // 투명 캔버스를 생성하여 글로벌 아이콘 제거
 
-    // const originPosTemp = {x:e.target.offsetLeft, y:e.target.offsetTop};
-    // console.log("originPosTemp", originPosTemp);
-    // setOriginPos(originPosTemp); //드래그 시작할때 드래그 전 위치값을 저장(onDragOver에 사용)
-
     const clientPosTemp = {x:e.clientX, y:e.clientY};
-    console.log("clientPosTemp", clientPosTemp);
+    // console.log("clientPosTemp", clientPosTemp);
     setClientPos(clientPosTemp);
 },[]);
 const dragHandler = useCallback((e) =>{
@@ -82,10 +77,10 @@ const dragHandler = useCallback((e) =>{
     const posTemp = {left: e.target.offsetLeft + (e.clientX - clientPos.x), //dx
         top:e.target.offsetTop + (e.clientY - clientPos.y)}; //dy
     setPos(posTemp);
-    console.log("e.target.offset: "+e.target.offsetLeft+ " "+ e.target.offsetTop);
-    console.log("e.client: "+e.clientX+" "+e.clientY);
-    console.log("clientPos: "+clientPos.x+" "+clientPos.y);
-    console.log("posTemp: "+posTemp.left+" "+posTemp.top);
+    // console.log("e.target.offset: "+e.target.offsetLeft+ " "+ e.target.offsetTop);
+    // console.log("e.client: "+e.clientX+" "+e.clientY);
+    // console.log("clientPos: "+clientPos.x+" "+clientPos.y);
+    // console.log("posTemp: "+posTemp.left+" "+posTemp.top);
 
     const clientPosTemp = {x:e.clientX, y:e.clientY};
     setClientPos(clientPosTemp);
@@ -95,22 +90,25 @@ const dragOverHandler = useCallback((e) =>{
 },[]);
 const dragEndHandler = useCallback(() =>{
 
-    // if (!isInsideDragArea(e)) {
-        // const posTemp = { ...pos };
-        // posTemp["left"] = originPos.x;
-        // posTemp["top"] = originPos.y;
-        // setPos(posTemp);
-    // }
-        // 캔버스 제거
-        const canvases = document.getElementsByClassName("canvas");
-        for (let i = 0; i < canvases.length; i++) {
-        let canvas = canvases[i];
-        canvas.parentNode?.removeChild(canvas);
-        }
-        // 캔버스로 인해 발생한 스크롤 방지 어트리뷰트 제거
-        document.body.removeAttribute("style");
+    const posTemp = { ...pos }; 
+    if (pos.left>0) {
+        posTemp.left = 0;
+    }
+    if(pos.top>0){
+        posTemp.top = 0;
+    }
+    setPos(posTemp);
+
+    // 캔버스 제거
+    const canvases = document.getElementsByClassName("canvas");
+    for (let i = 0; i < canvases.length; i++) {
+    let canvas = canvases[i];
+    canvas.parentNode?.removeChild(canvas);
+    }
+    // 캔버스로 인해 발생한 스크롤 방지 어트리뷰트 제거
+    document.body.removeAttribute("style");
       
-},[originPos]);
+},[pos]);
 
 
   useEffect(() => {
@@ -123,7 +121,7 @@ const dragEndHandler = useCallback(() =>{
 
 useEffect(()=>{
     addNode(dummyNodeList[0],ctx,canvasRef);
-},[ctx,dummyNodeList]);
+},[ctx]);
 
 
   return (
