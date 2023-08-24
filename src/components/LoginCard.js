@@ -2,44 +2,46 @@ import login from "../Images/login.svg";
 import peek from "../Images/visibility_on.svg";
 import peek_off from "../Images/visibility_off.svg";
 import register from "../Images/register.svg";
+import loading from "../Images/loading.svg";
 import styles from "./LoginCard.module.css";
+import { firestore } from "../services/firebase";
 import { useState,useReducer,useEffect } from "react";
 
 const nameReducer = (state,action) =>{
     if(action.type==="USER_INPUT_NAME") {
         const name = action.value.toString().trim(); 
-        if(name.length<2 || name.length>5) return {value: name, isValid:false, err:"2~5자 이내의 성을 포함한 이름을 입력해주세요."};
-        if((new RegExp(/^[가-힣]+$/)).test(name)) return {value: name, isValid:false, err:"한글 이름을 입력해주세요"};
+        if(name.length<2 || name.length>5) return {value: action.value, isValid:false, err:"2~5자 이내의 성을 포함한 이름을 입력해주세요."};
+        if(!(new RegExp(/^[가-힣]+$/)).test(name)) return {value: action.value, isValid:false, err:"한글 이름을 입력해주세요"};
         return {value: action.value, isValid:true, err: null};
         }
 }
 const idReducer = (state,action) =>{
     if(action.type==="USER_INPUT_ID") {
         const id = action.value.toString().trim(); 
-        if(id.length<5 || id.length>15) return {value: id, isValid:false, err:"아이디는 최소 5자 최대 15자입니다."};
-        if((new RegExp(/^(?=.*[a-zA-Z])[a-zA-Z0-9]*$/gi)).test(id)) return {value: id, isValid:false, err:"아이디는 영문과 숫자로만 구성되어야 합니다. (숫자만은 불가)"};
+        if(id.length<5 || id.length>15) return {value: action.value, isValid:false, err:"아이디는 최소 5자 최대 15자입니다."};
+        if(!(new RegExp(/^(?=.*[a-zA-Z])[a-zA-Z0-9]*$/gi)).test(id)) return {value: action.value, isValid:false, err:"아이디는 영문과 숫자로만 구성되어야 합니다.(영문 반드시 포함.)"};
         return {value: action.value, isValid:true, err: null};
         }
 }
 const pwReducer = (state,action) =>{
     if(action.type==="USER_INPUT_PW") {
         const pw = action.value.toString().trim(); 
-        if(pw.length<6 || (new RegExp(/^(?=.*[a-zA-Z])[a-zA-Z0-9]*$/gi)).test(pw))  return {pw: pw, pwc:state.pwc, isValid:false, isChecked:false, err:"비밀번호는 영문과 숫자가 포함된 6자리 이상이어야 합니다."};
-        else if((new RegExp(/^(?=.*[a-zA-Z])[a-zA-Z0-9]*$/gi)).test(pw)) return {pw:pw, pwc: state.pwc, isValid:false, isChecked:false, err:"아이디는 영문과 숫자로만 구성되어야 합니다.(영문 반드시 포함)"};
-        else if(pw===state.pwc) return {pw: pw, pwc:state.pwc, isValid:true, isChecked:true, err: null};
+        if(pw.length<6 || pw.length>20)  return {pw: action.value, pwc:state.pwc, isValid:false, isChecked:false, err:"비밀번호는 영문과 숫자가 포함된 6자 이상 20자 이하여야 합니다."};
+        else if(!(new RegExp(/^(?=.*[a-zA-Z])[a-zA-Z0-9]*$/gi)).test(pw)) return {pw:action.value, pwc: state.pwc, isValid:false, isChecked:false, err:"아이디는 영문과 숫자로만 구성되어야 합니다.(영문 반드시 포함)"};
+        else if(pw===state.pwc) return {pw: action.value, pwc:state.pwc, isValid:true, isChecked:true, err: null};
         else
-            return {pw: pw, pwc:state.pwc, isValid:true, isChecked:false, err: "비밀번호가 일치하지 않습니다."};
+            return {pw: action.value, pwc:state.pwc, isValid:true, isChecked:false, err: "비밀번호가 일치하지 않습니다."};
         }
     else if(action.type==="USER_INPUT_PW_CHECK"){
         const pwc = action.value.toString().trim();
-        if(!state.isValid) return {pw: state.pw, pwc:pwc, isValid:false, isChecked:false, err: "비밀번호를 다시 설정해 주세요."};
-        else if(state.pw !== pwc) return {pw: state.pw, pwc:pwc, isValid:true, isChecked:false, err: "비밀번호가 일치하지 않습니다."};
-        else return {pw: state.pw, pwc:pwc, isValid:true, isChecked:true, err: null};
+        if(!state.isValid) return {pw: state.pw, pwc:action.value, isValid:false, isChecked:false, err: "비밀번호를 다시 설정해 주세요."};
+        else if(state.pw !== pwc) return {pw: state.pw, pwc:action.value, isValid:true, isChecked:false, err: "비밀번호가 일치하지 않습니다."};
+        else return {pw: state.pw, pwc:action.value, isValid:true, isChecked:true, err: null};
     }
 }
 
 const LoginCard = ({isLoginOpen}) => {
-    
+   
     //비밀번호 peeking State
     const [peekPW,setPeekPW] = useState(false);
     const peekPWToggle = () => setPeekPW((prev)=>!prev);
@@ -48,6 +50,7 @@ const LoginCard = ({isLoginOpen}) => {
     //login/register모드 
     const [loginMode,setLoginMode] = useState(true); //true:login, false:register
     const toggleLoginMode = () => setLoginMode((prev)=>!prev);
+    const [isLoading,setIsLoading] = useState(false);
     
     //login valid State
     const [nameState,dispatchName] = useReducer(nameReducer,{
@@ -69,7 +72,7 @@ const LoginCard = ({isLoginOpen}) => {
     })
 
     const nameChangeHandler = (e) =>{
-        dispatchID({type:"USER_INPUR_NAME",value: e.target.value});
+        dispatchName({type:"USER_INPUT_NAME",value: e.target.value});
     }
     const idChangeHandler = (e) => {
         dispatchID({type:"USER_INPUT_ID", value: e.target.value});
@@ -80,10 +83,23 @@ const LoginCard = ({isLoginOpen}) => {
     const pwcChangeHandler = (e) => {
         dispatchPW({type:"USER_INPUT_PW_CHECK", value: e.target.value});
     }
-
+    const [filled,setFilled] = useState(false);
     const [isInputValid,setIsInputValid] = useState(false); //login 버튼 활성화/비활성화
     const [errorMessage,setErrorMessage] = useState(null);
     
+    useEffect(()=>{
+        if(loginMode){
+            setFilled(nameState.value.toString().length 
+            && idState.value.toString().length
+            && pwState.pw.toString().length);
+        }
+        else{
+            setFilled(nameState.value.toString().length 
+            && idState.value.toString().length
+            && pwState.pw.toString().length
+            && pwState.pwc.toString().length);
+        }
+    },[nameState,idState,pwState,loginMode]);
     useEffect(()=>{
         setIsInputValid(nameState.isValid && idState.isValid && pwState.isValid);
         if(nameState.err) setErrorMessage(nameState.err);
@@ -92,7 +108,9 @@ const LoginCard = ({isLoginOpen}) => {
         else setErrorMessage(null);
     },[idState,pwState]); //최종 validity 판단
 
-    const loginHandler = (e) => {
+    useEffect(()=>{console.log(pwState)},[pwState]);
+
+    const loginHandler = async (e) => {
         e.preventDefault();
         if(loginMode){ //로그인 
 
@@ -101,17 +119,25 @@ const LoginCard = ({isLoginOpen}) => {
             //1. input 유효성 확인
             if(!isInputValid){
                 //에러메시지 띄우기
-
+                console.log(errorMessage);
                 return;
             }
             //2. 회원 계정 객체 생성해서 firebase에 전송
             const newAccount = {
-                id: idState.id,
+                name: nameState.value,
+                id: idState.value,
                 pw: pwState.pw,
                 admin: false,
-
             }
+            setIsLoading(true);
+            
+            const accountREQ = firestore.collection("accountREQ");
+            const response = await accountREQ.doc(`${newAccount.id}`).set(newAccount); //새로운 계정 request 비동기 추가
+            
+            console.log('request sent');
+            setIsLoading(false);
             //3. 로그인 모드로 넘어가기
+            setLoginMode(true);
         }
     }
 
@@ -131,7 +157,7 @@ const LoginCard = ({isLoginOpen}) => {
         <div className={`${styles.input} ${styles.userpw}`}>    
             <label className={styles.labels} htmlFor="userpw">PW</label>
             <input className={styles.txtinput} type={peekPW ? 'text' : 'password'} name="userpw" onChange={(e)=>pwChangeHandler(e)}/>
-            <img src={login} className={`${styles.btn_login} ${isInputValid && styles.active} ${!loginMode && styles.register}`} onClick={loginHandler}/>
+            <img src={!isLoading ? login: loading} className={`${styles.btn_login} ${filled && styles.active} ${!loginMode && styles.register}`} onClick={loginHandler} style={{animation: isLoading ? 'rotate(360deg) 1s infinite' : 'none'}}/>
             <img src={peekPW ? peek : peek_off} className={styles.btn_peek} onClick={peekPWToggle}/>
         </div>
         

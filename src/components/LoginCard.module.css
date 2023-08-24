@@ -6,10 +6,12 @@
     left: -50%;
 
     opacity:0;
-    transform: translate(0,-5%);
+    visibility: hidden;
+    transform: translate(0,-10%);
     font-family: 'nanumSquare', sans-serif;
     /* visibility: hidden; */
-    transition: opacity 0.5s ease-out 200ms, transform 0.5s ease-out 200ms;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out,visibility 0.01s;
+    transition-delay: 250ms,250ms,500ms;
     
 }
 @media (min-width: 768px) {
@@ -22,6 +24,7 @@
 
 .container.active{
     opacity: 1;
+    visibility: visible;
     transform: translate(0%,0);
 }
 .input{
@@ -44,6 +47,7 @@
     border-color: rgb(255, 244, 223);
     background-color: rgb(255, 244, 223);
     font-family: 'nanumSquare', sans-serif;
+    
 }
 
 .toRegisterBox{
@@ -97,6 +101,7 @@
     opacity: 0.4;
     top:0.56rem;
     transition: top .8s ease-in-out;
+    
 }
 .btn_login.active{
     cursor: pointer;
@@ -104,6 +109,7 @@
 }
 .btn_login.register{
     top: 3.6rem;
+   
 }
 
 .btn_peek{

@@ -24,10 +24,10 @@
   left: 0;
   right: 0;
   opacity: 0;
-  transform: translate(-30%, 0);
+  visibility: hidden;
+  transform: translate(0,-15%);
   transition: transform .5s ease-out, opacity .5s ease-out, visibility 0.01s;
   transition-delay: 250ms,250ms,.5s;
-  visibility: hidden;
 }
 .sidebar.active{
   transform: translate(0%,0);
@@ -86,6 +86,7 @@
   .sidebar {
     margin-top: 10rem;
     margin-left: 5vw; 
+    transform: translate(-30%, 0);
   }
   .sidebar ul li {
     text-align: right;
