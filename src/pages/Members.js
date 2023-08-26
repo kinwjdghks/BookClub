@@ -6,48 +6,48 @@ const Members = () => {
     {
       name: "박윤진",
       position: "회장",
-      intro: "나는야 박윤진",
+      intro: "",
     },
     {
       name: "이다혜",
       position: "부회장",
-      intro: "나는야 이다혜",
+      intro: "",
     },
     {
       name: "정정환",
       position: "기획부장",
-      intro: "나는야 정정환",
+      intro: "",
     },
     {
       name: "양영준",
       position: "멤버",
-      intro: "나는야 양영준",
+      intro: "",
     },
     {
       name: "유건",
       position: "멤버",
-      intro: "나는야 유건",
+      intro: "",
     },
     
     {
       name: "김이수",
       position: "멤버",
-      intro: "나는야 김이수",
+      intro: "",
     },
     {
       name: "노혜원",
       position: "멤버",
-      intro: "나는야 노혜원",
+      intro: "",
     },
     {
       name: "박성욱",
       position: "멤버",
-      intro: "나는야 박성욱",
+      intro: "",
     },
     {
       name: "이호승",
       position: "멤버",
-      intro: "나는야 이호승",
+      intro: "",
     },
   ];
 

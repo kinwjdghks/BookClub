@@ -6,6 +6,7 @@ const AuthContextProvider = ({children}) =>{
     
     const initialState = {
         isLoggedIn:false,
+        admin:false,
         loginToggle: loginToggle
     }
     const [loginState,setLoginState] = useState(initialState);

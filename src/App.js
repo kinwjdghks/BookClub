@@ -4,7 +4,7 @@ import Members from "./pages/Members";
 import History from "./pages/History";
 import Activity from "./pages/Activity";
 import AuthFailPage from "./pages/AuthFailPage";
-
+import Admin from "./pages/Admin";
 
 import TopHeader from "./components/TopHeader";
 import NavButton from "./components/NavButton";
@@ -29,6 +29,7 @@ function App() {
             <Route path="/history" element={<History />} />
             <Route path="/activity" element={<Activity />} />
             <Route path="/oops" element={<AuthFailPage/>}/>
+            <Route path="/admin" element = {<Admin/>}/>
           </Routes>
         </Router>
       </AuthContextProvider>

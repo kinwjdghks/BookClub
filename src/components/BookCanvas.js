@@ -2,62 +2,59 @@ import styles from "./BookCanvas.module.css";
 import { useState, useRef, useEffect, useCallback} from "react";
 
 
-const dummyNodeList = [
-  {
+const dummyNodeList = {
+  '문학':{
     id:'문학',
     cx: 300, //center
     cy: 300,
     level: 0, //0,1,2
     img:null,
-    par: null,
+    par: null
   },
+  '사회과학':
   {
-    id:'사회과학',
     cx: 80, 
-    cy:80,
-    level: 1,
+    cy: 80,
+    level: 0,
     img:null, 
-    par: '사회과학',
+    par: null
   },
-  {
-    id:'1984',
+  '1984':{
     cx: 300, 
     cy: 20,
     level: 1, 
     img:null,
-    par: '문학',
-  },
-];
-const addNode = (node, ctx, canvasRef) => {
-    if(!ctx){
-        // console.log("ctx is null")
-        return;
-    }
-    if(!canvasRef){
-        // console.log("canvas is null")
-        return;
-    }
-    ctx.beginPath();
-    ctx.arc(node.cx,node.cy,100,0,2*Math.PI);
-    ctx.stroke();
-    ctx.strokeStyle = 'gray';
-    ctx.lineWidth = 0.1;
-    ctx.fillStyle = 'skyblue';
-    ctx.fill();
-    if(node.level === 0){
-        ctx.font = "30px NotoKR";
-        ctx.fillText("aafnaf",node.cx,node.cy);
-    }
+    par: '문학'
+  }
 };
+const createNewNode = (node, canvasRef) => {
 
+    const rad = node.level===0 ? 250 : node.level===1 ? 200 : 150;
+    const color = node.level===0 ? "orange" : node.level===1 ? "blue" : "gray";
+    return(
+        <>
+        {node.par && <path 
+        key={node.id}
+        d={`M${node.cx} ${node.cy} L${node.par.cx} ${node.par.cy}`}
+        />}
+        <circle cx={node.cx} cy={node.cy} r={rad} fill={color} />
+        </>
+        )
+};
+const createMap = () =>{
 
-
+}
 
 const BookCanvas = () => {
+
+  const [nodeList,setNodeList] = useState(dummyNodeList); 
+  const [svgMap,setsvgMap] = useState();
+  const updatesvgMap = () =>{
+    
+  }
   const canvasRef = useRef();
   const [clientPos,setClientPos] = useState({x:0,y:0}); //실시간 커서위치인 e.client를 갱신하는값
   const [pos,setPos] = useState({left:0, top:0}); //canvas가 실제로 위치하는 좌표
-  const [ctx, setCtx] = useState(null); //canvas에 도형 그리기 context
  //clientX,Y: 보여지는 화면 기준 offset. offsetX,Y: 속한 Div 시작점 기준 offset
 
   const dragStartHandler = useCallback((e) =>{
@@ -111,24 +108,11 @@ const dragEndHandler = useCallback(() =>{
 },[pos]);
 
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas.getContext) return <p>Something went wrong!</p>;
-    const ctx = canvas.getContext("2d");
-    setCtx(ctx);
-    
-}, []);
-
-useEffect(()=>{
-    addNode(dummyNodeList[0],ctx,canvasRef);
-},[ctx]);
-
-
   return (
     <div className={styles.canvas_wrapper}>
-      <canvas className={styles.canvas} ref={canvasRef} width="2560" height="1600" 
+      <div className={styles.canvas} ref={canvasRef} width="2560" height="1600" 
         draggable onDragStart={(e) => dragStartHandler(e)} onDrag={(e) => dragHandler(e)}
-        onDragOver={(e) => dragOverHandler(e)} onDragEnd={(e) => dragEndHandler(e)} style={{left:pos.left,top:pos.top}}></canvas>
+        onDragOver={(e) => dragOverHandler(e)} onDragEnd={(e) => dragEndHandler(e)} style={{left:pos.left,top:pos.top}}></div>
     </div>
   );
 };

@@ -4,8 +4,9 @@ import peek_off from "../Images/visibility_off.svg";
 import register from "../Images/register.svg";
 import loading from "../Images/loading.svg";
 import styles from "./LoginCard.module.css";
-import { firestore } from "../services/firebase";
-import { useState,useReducer,useEffect } from "react";
+import { db } from "../services/firebase";
+import { collection, setDoc, doc } from "firebase/firestore/lite";
+import { useState,useReducer,useEffect,useRef } from "react";
 
 const nameReducer = (state,action) =>{
     if(action.type==="USER_INPUT_NAME") {
@@ -38,6 +39,7 @@ const pwReducer = (state,action) =>{
         else if(state.pw !== pwc) return {pw: state.pw, pwc:action.value, isValid:true, isChecked:false, err: "비밀번호가 일치하지 않습니다."};
         else return {pw: state.pw, pwc:action.value, isValid:true, isChecked:true, err: null};
     }
+    
 }
 
 const LoginCard = ({isLoginOpen}) => {
@@ -53,6 +55,16 @@ const LoginCard = ({isLoginOpen}) => {
     const [isLoading,setIsLoading] = useState(false);
     
     //login valid State
+    const nameRef=useRef();
+    const idRef = useRef();
+    const pwRef = useRef();
+    const pwcRef = useRef();
+    const clearInput = () =>{
+        nameRef.current.value='';
+        idRef.current.value='';
+        pwRef.current.value='';
+        pwcRef.current.value='';
+    }
     const [nameState,dispatchName] = useReducer(nameReducer,{
         value:'',
         isValid:false,
@@ -72,21 +84,26 @@ const LoginCard = ({isLoginOpen}) => {
     })
 
     const nameChangeHandler = (e) =>{
+        setShowError(false);
         dispatchName({type:"USER_INPUT_NAME",value: e.target.value});
     }
     const idChangeHandler = (e) => {
+        setShowError(false);
         dispatchID({type:"USER_INPUT_ID", value: e.target.value});
     }
     const pwChangeHandler = (e) => {
+        setShowError(false);
         dispatchPW({type:"USER_INPUT_PW", value: e.target.value});
     }
     const pwcChangeHandler = (e) => {
+        setShowError(false);
         dispatchPW({type:"USER_INPUT_PW_CHECK", value: e.target.value});
     }
     const [filled,setFilled] = useState(false);
     const [isInputValid,setIsInputValid] = useState(false); //login 버튼 활성화/비활성화
     const [errorMessage,setErrorMessage] = useState(null);
-    
+    const [showError,setShowError] = useState(false);
+
     useEffect(()=>{
         if(loginMode){
             setFilled(nameState.value.toString().length 
@@ -100,26 +117,29 @@ const LoginCard = ({isLoginOpen}) => {
             && pwState.pwc.toString().length);
         }
     },[nameState,idState,pwState,loginMode]);
+
     useEffect(()=>{
-        setIsInputValid(nameState.isValid && idState.isValid && pwState.isValid);
+        setIsInputValid(nameState.isValid && idState.isValid && pwState.isValid && pwState.isChecked);
         if(nameState.err) setErrorMessage(nameState.err);
         else if(idState.err) setErrorMessage(idState.err);
         else if(pwState.err) setErrorMessage(pwState.err);
         else setErrorMessage(null);
     },[idState,pwState]); //최종 validity 판단
 
-    useEffect(()=>{console.log(pwState)},[pwState]);
+    // useEffect(()=>{console.log(pwState)},[pwState]);
 
     const loginHandler = async (e) => {
         e.preventDefault();
+
+        if(!filled) return;
         if(loginMode){ //로그인 
 
         }
         else{ //회원가입
             //1. input 유효성 확인
             if(!isInputValid){
-                //에러메시지 띄우기
-                console.log(errorMessage);
+                setShowError(true);
+                // console.log(errorMessage);
                 return;
             }
             //2. 회원 계정 객체 생성해서 firebase에 전송
@@ -131,13 +151,18 @@ const LoginCard = ({isLoginOpen}) => {
             }
             setIsLoading(true);
             
-            const accountREQ = firestore.collection("accountREQ");
-            const response = await accountREQ.doc(`${newAccount.id}`).set(newAccount); //새로운 계정 request 비동기 추가
-            
+            try{
+            const accountREQ = collection(db,"accountREQ");
+            const response = await setDoc(doc(accountREQ,`${newAccount.id}`),newAccount); //새로운 계정 request 비동기 추가
+            }
+            catch(e){
+                console.log(e);
+            }
             console.log('request sent');
             setIsLoading(false);
             //3. 로그인 모드로 넘어가기
             setLoginMode(true);
+            clearInput();
         }
     }
 
@@ -145,25 +170,27 @@ const LoginCard = ({isLoginOpen}) => {
     <div className={`${styles.container} ${isLoginOpen && styles.active}`}>
       <form className={styles.loginCard} onSubmit={(e)=>loginHandler()}>
         <div className={`${styles.input} ${styles.name}`}>
-            <label className={styles.labels} htmlFor="name">NAME</label>
-            <input className={styles.txtinput} type="text" name="name" onChange={(e)=>nameChangeHandler(e)}/>
+            <label className={styles.labels} htmlFor="name">NAME (실명)</label>
+            <input className={styles.txtinput} type="text" name="name" onChange={(e)=>nameChangeHandler(e)} ref={nameRef}/>
         </div>
 
         <div className={`${styles.input} ${styles.userid}`}>
             <label className={styles.labels} htmlFor="userid">ID</label>
-            <input className={styles.txtinput} type="text" name="userid" onChange={(e)=>idChangeHandler(e)}/>
+            <input className={styles.txtinput} type="text" name="userid" onChange={(e)=>idChangeHandler(e)} ref={idRef}/>
         </div>
        
         <div className={`${styles.input} ${styles.userpw}`}>    
             <label className={styles.labels} htmlFor="userpw">PW</label>
-            <input className={styles.txtinput} type={peekPW ? 'text' : 'password'} name="userpw" onChange={(e)=>pwChangeHandler(e)}/>
-            <img src={!isLoading ? login: loading} className={`${styles.btn_login} ${filled && styles.active} ${!loginMode && styles.register}`} onClick={loginHandler} style={{animation: isLoading ? 'rotate(360deg) 1s infinite' : 'none'}}/>
+            <input className={styles.txtinput} type={peekPW ? 'text' : 'password'} name="userpw" onChange={(e)=>pwChangeHandler(e)} ref={pwRef}/>
+            {!isLoading?
+             <img src={login} className={`${styles.btn_login} ${filled && styles.active} ${!loginMode && styles.register}`} onClick={loginHandler}/>
+            :<img src={loading} className={styles.loading}/>}
             <img src={peekPW ? peek : peek_off} className={styles.btn_peek} onClick={peekPWToggle}/>
         </div>
         
         <div className={`${styles.input}  ${styles.userpwcheck} ${!loginMode && styles.active}`}>
             <label className={styles.labels} htmlFor="userpwcheck">PW CHECK</label>
-            <input className={`${styles.txtinput} ${styles.userpwcheck}`} type={peekPWC ? 'text' : 'password'} name="userpwcheck" onChange={(e)=>pwcChangeHandler(e)}/>
+            <input className={`${styles.txtinput} ${styles.userpwcheck}`} type={peekPWC ? 'text' : 'password'} name="userpwcheck" onChange={(e)=>pwcChangeHandler(e)} ref={pwcRef}/>
             <img src={peekPWC ? peek : peek_off} className={styles.btn_peek} onClick={peekPWCToggle}/>
         </div>
         
@@ -171,8 +198,8 @@ const LoginCard = ({isLoginOpen}) => {
             <img src={register} style={{height:'1.5rem',width:'1.5rem',marginLeft:'8rem'}}/>
             <p onClick={toggleLoginMode} className={styles.toRegister}>Register</p>
         </div>
-
       </form>
+      <div className={styles.errorContainer}>{!showError ? "" : errorMessage}</div>
       <div className={styles.registerCard}></div>
     </div>
   );

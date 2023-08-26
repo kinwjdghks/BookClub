@@ -119,3 +119,28 @@
     left: 16.8rem;
 }
 
+.loading{
+    position: absolute;
+    width: 1.7rem;
+    height: 1.7rem;
+    left: 18.8rem;
+    top:0.56rem;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    from{transform: rotate(0deg);}
+    to{transform: rotate(-360deg);}
+}
+
+.errorContainer{
+    width:20.5rem;
+    height: 3rem;
+    /* border: 1px solid black; */
+    margin-top: 4rem;
+    margin-left: -1rem;
+    font-weight: 900;
+    color: rgb(166, 0, 0);
+    text-align: center;
+    word-wrap: normal;
+    line-height: 1.5rem;
+}
