@@ -2,7 +2,7 @@
     width: 90vw;
     height: 80vh;
     border: 2px solid black;
-    margin: 15vh auto;
+    margin: 0 auto;
     overflow: hidden;
     position: relative;
 }

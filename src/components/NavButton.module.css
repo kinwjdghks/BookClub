@@ -23,6 +23,7 @@
   margin: 10rem auto;
   left: 0;
   top:0;
+  right:0;
   opacity: 0;
   visibility: hidden;
   transform: translate(0,-15%);

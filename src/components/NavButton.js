@@ -9,8 +9,10 @@ const NavButton = () => {
 
     const [isCatOpen,setIsCatOpen] = useState(false);
     const [isLoginOpen,setIsLoginOpen] = useState(false);
-    const toggleLogin = () => setIsLoginOpen((prev)=>setIsLoginOpen(!prev));
    
+    const [loginMode,setLoginMode] = useState(true); //true:login, false:register
+    const toggleLoginMode = () => setLoginMode((prev)=>!prev);
+
     const toggleCat=()=>{
       if(isCatOpen) setIsLoginOpen(false);
       setIsCatOpen((prev)=>!prev);
@@ -54,10 +56,13 @@ const NavButton = () => {
               if(AUTH.isLoggedIn) moveto("./activity");
               else moveto("./oops");
             }}>Activity</li>
-            <li onClick={()=>{AUTH.loginToggle(); toggleLogin();}}>Login</li>
+            <li onClick={()=>{
+              setIsLoginOpen(true);
+              if(!loginMode) toggleLoginMode();
+              }}>Login</li>
           </ul>
         </div>
-      <LoginCard isLoginOpen={isLoginOpen}/>
+      <LoginCard isLoginOpen={isLoginOpen} loginMode={loginMode} onLoginModetoggle={toggleLoginMode}/>
       </div>
       <div className={`${styles.modal} ${isCatOpen && styles.active}`} onClick={toggleCat}></div>
       <div className={styles.hamburger} onClick={toggleCat}>

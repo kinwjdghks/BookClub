@@ -26,6 +26,7 @@ const Admin = () =>{
             })
             
         }
+        window.location.reload();
     }
     const setAdminHandler = (e,doc) =>{
         

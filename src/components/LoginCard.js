@@ -5,7 +5,7 @@ import register from "../Images/register.svg";
 import loading from "../Images/loading.svg";
 import styles from "./LoginCard.module.css";
 import { db } from "../services/firebase";
-import { collection, setDoc, doc } from "firebase/firestore/lite";
+import { collection, setDoc, doc, getDoc } from "firebase/firestore/lite";
 import { useState,useReducer,useEffect,useRef } from "react";
 
 const nameReducer = (state,action) =>{
@@ -42,7 +42,7 @@ const pwReducer = (state,action) =>{
     
 }
 
-const LoginCard = ({isLoginOpen}) => {
+const LoginCard = ({isLoginOpen,loginMode,onLoginModetoggle}) => {
    
     //비밀번호 peeking State
     const [peekPW,setPeekPW] = useState(false);
@@ -50,9 +50,9 @@ const LoginCard = ({isLoginOpen}) => {
     const [peekPWC,setPeekPWC] = useState(false);
     const peekPWCToggle = () => setPeekPWC((prev)=>!prev);
     //login/register모드 
-    const [loginMode,setLoginMode] = useState(true); //true:login, false:register
-    const toggleLoginMode = () => setLoginMode((prev)=>!prev);
+    
     const [isLoading,setIsLoading] = useState(false);
+    
     
     //login valid State
     const nameRef=useRef();
@@ -103,11 +103,12 @@ const LoginCard = ({isLoginOpen}) => {
     const [isInputValid,setIsInputValid] = useState(false); //login 버튼 활성화/비활성화
     const [errorMessage,setErrorMessage] = useState(null);
     const [showError,setShowError] = useState(false);
+    const [loginAlert,setLoginAlert] = useState(""); //로그인 실패 / 가입 대기중
 
     useEffect(()=>{
         if(loginMode){
-            setFilled(nameState.value.toString().length 
-            && idState.value.toString().length
+            setFilled(
+            idState.value.toString().length
             && pwState.pw.toString().length);
         }
         else{
@@ -126,14 +127,29 @@ const LoginCard = ({isLoginOpen}) => {
         else setErrorMessage(null);
     },[idState,pwState]); //최종 validity 판단
 
-    // useEffect(()=>{console.log(pwState)},[pwState]);
-
+    useEffect(()=>{
+        clearInput();
+    },[isLoginOpen]);
+    
     const loginHandler = async (e) => {
         e.preventDefault();
 
         if(!filled) return;
         if(loginMode){ //로그인 
-
+            const ref = doc(db,"accounts",`${idState.value}`);
+            const account = await getDoc(ref);
+            const data = account.data();
+            if(!account){
+                setLoginAlert("로그인 실패");
+                return;
+            }
+            else{
+                console.log(data);
+                // if(pwState.pw === data['pw']){
+                //     console.log("logged in");
+                // }
+            }
+            
         }
         else{ //회원가입
             //1. input 유효성 확인
@@ -161,7 +177,7 @@ const LoginCard = ({isLoginOpen}) => {
             console.log('request sent');
             setIsLoading(false);
             //3. 로그인 모드로 넘어가기
-            setLoginMode(true);
+            onLoginModetoggle();
             clearInput();
         }
     }
@@ -169,7 +185,7 @@ const LoginCard = ({isLoginOpen}) => {
   return (
     <div className={`${styles.container} ${isLoginOpen && styles.active}`}>
       <form className={styles.loginCard} onSubmit={(e)=>loginHandler()}>
-        <div className={`${styles.input} ${styles.name}`}>
+        <div className={`${styles.input} ${styles.name} ${!loginMode && styles.active}`}>
             <label className={styles.labels} htmlFor="name">NAME (실명)</label>
             <input className={styles.txtinput} type="text" name="name" onChange={(e)=>nameChangeHandler(e)} ref={nameRef}/>
         </div>
@@ -196,7 +212,7 @@ const LoginCard = ({isLoginOpen}) => {
         
         <div className={`${styles.toRegisterBox} ${loginMode && styles.active}`} >
             <img src={register} style={{height:'1.5rem',width:'1.5rem',marginLeft:'8rem'}}/>
-            <p onClick={toggleLoginMode} className={styles.toRegister}>Register</p>
+            <p onClick={onLoginModetoggle} className={styles.toRegister}>Register</p>
         </div>
       </form>
       <div className={styles.errorContainer}>{!showError ? "" : errorMessage}</div>

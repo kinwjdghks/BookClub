@@ -5,7 +5,7 @@
     background-color: white;
     width: 100vw;
     height: 5rem;
-    border-bottom: 1px solid black;
+    /* border-bottom: 1px solid black; */
     display: flex;
     flex-direction: row;
     justify-content: center;

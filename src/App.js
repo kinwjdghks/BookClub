@@ -12,6 +12,7 @@ import { Reset } from "styled-reset";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthContextProvider from "./Context/provider/AuthContextProvider";
+
 function App() {
   return (
     <div>

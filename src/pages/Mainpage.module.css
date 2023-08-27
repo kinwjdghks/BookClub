@@ -1,4 +1,39 @@
 .mainpage{
     height: 200vh;
     width: 100vw;
+    overflow: auto;
+    display: flex;
+}
+.Gallery{
+    margin-top: 10rem;
+    width: 100vw;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+}
+.ongoingBook{
+    width: 80vw;
+    padding: 5vw;
+    position: relative;
+}
+.imgcontainer{
+    position: absolute;
+    width: 60vw;
+}
+.ongoingBook{
+    top:0;
+    left:0;
+    z-index: 5;
+}
+.prevBook{
+    top:30vw;
+    left: 35vw;
+    z-index:4;
+}
+.img{
+    padding: 0;
+    border-radius: 0.3rem;
+    width: inherit;
+    height: inherit;
+    object-fit: contain;
 }
